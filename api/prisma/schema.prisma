@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model tb_usuario {
+  id_usuario      Int                @id @default(autoincrement())
+  url_imagem      String?
+  nome            String
+  email           String?
+  login           String
+  telefone        String?
+  hash_senha      String
+  ativo           Boolean            @default(true)
+  classificacoes  tb_classificacao[]
+}
+
+model tb_classificacao {
+  id_classificacao  Int                             @id @default(autoincrement())
+  id_usuario        Int
+  usuario           tb_usuario                      @relation(fields: [id_usuario], references: [id_usuario])
+  estabelecimentos  tb_classificacao_estabelecimento[]
+}
+
+model tb_classificacao_estabelecimento {
+  id_classificacao   Int
+  id_estabelecimento Int
+  classificacao      tb_classificacao   @relation(fields: [id_classificacao], references: [id_classificacao])
+  estabelecimento    tb_estabelecimento @relation(fields: [id_estabelecimento], references: [id_estabelecimento])
+
+  @@id([id_classificacao, id_estabelecimento]) // chave primária composta
+}
+
+model tb_estabelecimento {
+  id_estabelecimento  Int                              @id @default(autoincrement())
+  nome                String
+  tipo                String
+  faixa_preco         String
+  ambiente            String
+  publico             String
+  avaliacao           Decimal
+  abre                String
+  fecha               String
+  classificacoes      tb_classificacao_estabelecimento[]
+}
