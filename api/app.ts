@@ -45,9 +45,15 @@ app.use((req, res, next) => {
 
 import authRoutes from "./src/routes/auth";
 import usuariosRoutes from "./src/routes/usuarios";
+import estabelecimentosRoutes from "./src/routes/estabelecimentos";
+import classificacoesRoutes from "./src/routes/classificacoes";
+import classificacoesEstabelecimentosRoutes from "./src/routes/classificacoesEstabelecimentos";
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
+app.use("/estabelecimentos", estabelecimentosRoutes);
+app.use("/classificacoes", classificacoesRoutes);
+app.use("/classificacoes-estabelecimentos", classificacoesEstabelecimentosRoutes);
 
 
 
