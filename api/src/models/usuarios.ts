@@ -2,6 +2,7 @@ import { Prisma } from "../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import bcrypt from "bcrypt";
 import * as type from "../types/usuario";
+import e from "express";
 
 function badRequest(message: string) {
   const error = new Error(message) as Error & { statusCode: number };
@@ -14,28 +15,7 @@ function isBcryptHash(value: string) {
 }
 
 export async function createUsuario(data: type.UsuarioDTO) {
-  const organizacao = await prisma.tb_organizacao.findUnique({
-    where: { id_organizacao: data.id_organizacao },
-    select: { id_organizacao: true }
-  });
-
-  if (!organizacao) {
-    throw badRequest("Organizacao nao encontrada");
-  }
-
-  const cargo = await prisma.tb_cargos.findUnique({
-    where: {
-      id_cargo_id_organizacao: {
-        id_cargo: data.id_cargo,
-        id_organizacao: data.id_organizacao
-      }
-    },
-    select: { id_cargo: true }
-  });
-
-  if (!cargo) {
-    throw badRequest("Cargo nao encontrado para a organizacao informada");
-  }
+ 
 
   const senhaHash = isBcryptHash(data.hash_senha)
     ? data.hash_senha
@@ -44,9 +24,6 @@ export async function createUsuario(data: type.UsuarioDTO) {
   try {
     return await prisma.tb_usuario.create({
       data: {
-        id_organizacao: data.id_organizacao,
-        id_cargo: data.id_cargo,
-        url_imagem: data.url_imagem,
         nome: data.nome,
         email: data.email,
         login: data.login,
@@ -56,11 +33,7 @@ export async function createUsuario(data: type.UsuarioDTO) {
       }
     });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && (error.code === "P2025" || error.code === "P2003")) {
-      throw badRequest("Cargo nao encontrado para a organizacao informada");
-    }
-
-    throw error;
+    return error instanceof Error
   }
 }
 

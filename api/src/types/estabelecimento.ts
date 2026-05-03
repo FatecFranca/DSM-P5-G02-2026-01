@@ -6,7 +6,7 @@ export const EstabelecimentoSchema = z.object({
   faixa_preco: z.string().min(1, "faixa_preco e obrigatorio"),
   ambiente: z.string().min(1, "ambiente e obrigatorio"),
   publico: z.string().min(1, "publico e obrigatorio"),
-  avaliacao: z.number(),
+  avaliacao: z.union([z.number(), z.string().min(1, "avaliacao e obrigatoria")]),
   abre: z.string().min(1, "abre e obrigatorio"),
   fecha: z.string().min(1, "fecha e obrigatorio"),
 });

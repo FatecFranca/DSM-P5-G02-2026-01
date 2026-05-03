@@ -15,7 +15,7 @@ export async function loginController(req: Request, res: Response) {
   if (!parsed.success) {
     return res.status(400).json({
       success: false,
-      errors: parsed.error
+      error: "Dados inválidos"
     });
   }
 

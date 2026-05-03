@@ -10,9 +10,12 @@ import {
 
 const router = Router();
 
-router.use(authMiddleware);
 
+// Rota pública para criação de usuário
 router.post("/", createUsuarioController);
+
+// Todas as rotas abaixo exigem autenticação
+router.use(authMiddleware);
 router.get("/", listUsuariosController);
 router.get("/:id", getUsuarioByIdController);
 router.put("/:id", updateUsuarioController);

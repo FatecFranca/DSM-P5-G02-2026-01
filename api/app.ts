@@ -7,6 +7,7 @@ require("dotenv").config();
 
 
 // cors
+/*
 const normalizeOrigin = (value: string) => value.trim().replace(/\/$/, "");
 const rawCorsOrigin = process.env.CORS_ORIGIN?.trim();
 const allowAllOrigins = !rawCorsOrigin || rawCorsOrigin === "*";
@@ -30,14 +31,15 @@ const corsOptions: cors.CorsOptions = {
     callback(new Error(`CORS bloqueado para a origem: ${origin}`));
   },
 };
-
+*/
 const app = express();
 
 app.use(express.json());
+/*
 app.use(cors(corsOptions))
 
 app.options("*", cors(corsOptions));
-
+*/
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Expose-Headers", "Authorization, x-access-token");
   next();
