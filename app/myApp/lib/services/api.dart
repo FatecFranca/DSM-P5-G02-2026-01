@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   // Troque pela sua URL real. Em Android Emulator use 10.0.2.2,
   // em iOS Simulator use localhost, em device físico use o IP da máquina.
-  static const String _baseUrl = 'https://dummyjson.com';
+  static const String _baseUrl = 'https://api-qualquer.canadacentral.cloudapp.azure.com';
   // static final String _baseUrl = dotenv.env['API_URL'] ?? 'http://10.0.2.2:8080';
 
   /// Retorna o token JWT em caso de sucesso.
@@ -18,7 +18,7 @@ class ApiService {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
+      body: jsonEncode({'login': email, 'senha': password}),
     );
 
     if (response.statusCode == 200) {
