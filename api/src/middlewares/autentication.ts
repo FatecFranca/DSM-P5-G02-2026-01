@@ -32,7 +32,7 @@ export const authMiddleware = async (
       return res.status(401).json({ success: false, message: "Usuario invalido ou inativo" });
     }
 
-    req.user = { id_usuario: user.id_usuario, login: user.login };
+    req.user = { id_usuario: user.id_usuario, email: user.email };
     next();
   } catch {
     return res.status(401).json({ success: false, message: "Token invalido ou expirado" });

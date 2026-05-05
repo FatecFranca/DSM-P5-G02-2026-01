@@ -1,8 +1,8 @@
 import { prisma } from "../../lib/prisma";
 
-export async function findUserByLogin(login: string) {
+export async function findUserByEmail(email: string) {
   return prisma.tb_usuario.findFirst({
-    where: { login }
+    where: { email }
   });
 }
 

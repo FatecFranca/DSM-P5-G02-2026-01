@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { generateToken } from "../middlewares/autentication";
-import { findUserByLogin, updateUserPassword } from "../models/auth";
+import { findUserByEmail, updateUserPassword } from "../models/auth";
 import { loginSchema } from "../types/authSchema";
 import bcrypt from "bcrypt";
 
@@ -19,10 +19,10 @@ export async function loginController(req: Request, res: Response) {
     });
   }
 
-  const { login, senha } = parsed.data;
+  const { email, senha } = parsed.data;
 
   try {
-    const user = await findUserByLogin(login);
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return res.status(401).json({

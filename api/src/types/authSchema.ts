@@ -4,7 +4,7 @@ import { z } from "zod";
 extendZodWithOpenApi(z);
 
 export const loginSchema = z.object({
-  login: z.string().min(1, "Login e obrigatorio"),
+  email: z.string().email("Email invalido"),
   senha: z.string().min(1, "Senha e obrigatoria"),
 });
 

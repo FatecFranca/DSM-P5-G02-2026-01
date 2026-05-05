@@ -11,8 +11,7 @@ model tb_usuario {
   id_usuario      Int                @id @default(autoincrement())
   url_imagem      String?
   nome            String
-  email           String?
-  login           String
+  email           String             @unique
   telefone        String?
   hash_senha      String
   ativo           Boolean            @default(true)

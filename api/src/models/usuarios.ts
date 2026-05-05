@@ -26,10 +26,7 @@ export async function createUsuario(data: type.UsuarioDTO) {
       data: {
         nome: data.nome,
         email: data.email,
-        login: data.login,
-        telefone: data.telefone,
         hash_senha: senhaHash,
-        ativo: data.ativo
       }
     });
   } catch (error) {

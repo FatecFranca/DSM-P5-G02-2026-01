@@ -208,10 +208,7 @@ class _LoginPageState extends State<LoginPage>
           const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {},
-              child: const Text('Esqueceu a senha?'),
-            ),
+            
           ),
         ],
       ),
