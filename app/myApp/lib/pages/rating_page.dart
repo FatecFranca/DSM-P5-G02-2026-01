@@ -24,40 +24,34 @@ class _RatingPageState extends State<RatingPage> {
   bool _isLoading = false;
 
   final List<String> _tiposEstabelecimento = [
-    'Restaurante',
-    'Bar',
-    'Café',
-    'Lanchonete',
-    'Pizzaria',
-    'Sorveteria',
-    'Padaria',
-    'Outro',
+    'bar',
+    'hamburgueria',
+    'lanchonete',
+    'restaurante',
+    'cafeteria',
+    'pizzaria',
+    'churrascaria',
+    'sushi bar',
+    'choperia',
+    'espetaria',
+    'bar/hamburgueria',
   ];
 
   final List<String> _faixasPreco = [
-    r'$ — Econômico',
-    r'$$ — Moderado',
-    r'$$$ — Caro',
-    r'$$$$ — Muito caro',
+    'barato',
+    'medio',
+    'caro',
   ];
 
   final List<String> _ambientes = [
-    'Íntimo / Romântico',
-    'Familiar',
-    'Casual / Descontraído',
-    'Moderno / Sofisticado',
-    'Ao ar livre',
-    'Industrial / Alternativo',
+    'formal',
+    'informal',
   ];
 
   final List<String> _publicosAlvo = [
-    'Famílias',
-    'Casais',
-    'Jovens / Universitários',
-    'Executivos / Corporativo',
-    'Pet friendly',
-    'Veganos / Vegetarianos',
-    'Todos os públicos',
+    'jovem',
+    'adulto',
+    'jovem/adulto',
   ];
 
   Future<void> _selectTime(bool isAbre) async {
@@ -382,25 +376,29 @@ class _RatingPageState extends State<RatingPage> {
                 color: hasValue ? AppTheme.accent : AppTheme.textSecondary,
                 size: 20),
             const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 11,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 11,
+                    ),
                   ),
-                ),
-                Text(
-                  _formatTime(time),
-                  style: TextStyle(
-                    color: hasValue ? AppTheme.textPrimary : AppTheme.textSecondary,
-                    fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
-                    fontSize: 14,
+                  Text(
+                    _formatTime(time),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: hasValue ? AppTheme.textPrimary : AppTheme.textSecondary,
+                      fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

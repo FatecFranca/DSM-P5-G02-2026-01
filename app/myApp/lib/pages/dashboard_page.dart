@@ -11,12 +11,7 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_outline_rounded),
-            onPressed: () => context.go(AppRouter.user),
-          ),
-        ],
+
       ),
       body: SafeArea(
         child: Center(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../router/app_router.dart';
 import '../theme/app_theme.dart';
+import '../services/api.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +17,10 @@ class _RegisterPageState extends State<RegisterPage>
   final _nomeController = TextEditingController();
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
+  final _confirmaSenhaController = TextEditingController();
+  final _apiService = ApiService();
   bool _obscureSenha = true;
+  bool _obscureConfirmaSenha = true;
   bool _isLoading = false;
   late AnimationController _animController;
   late Animation<double> _fadeAnim;
@@ -43,17 +47,49 @@ class _RegisterPageState extends State<RegisterPage>
     _nomeController.dispose();
     _emailController.dispose();
     _senhaController.dispose();
+    _confirmaSenhaController.dispose();
     super.dispose();
   }
 
   Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (mounted) {
-      setState(() => _isLoading = false);
-      context.go(AppRouter.dashboard);
+
+    try {
+      await _apiService.register(
+        _nomeController.text.trim(),
+        _emailController.text.trim(),
+        _senhaController.text,
+      );
+      if (mounted) {
+        context.go(AppRouter.login);
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        _showErrorSnackBar(e.toString().replaceFirst('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline_rounded, color: Colors.white),
+            const SizedBox(width: 10),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.redAccent.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 4),
+      ),
+    );
   }
 
   @override
@@ -133,7 +169,6 @@ class _RegisterPageState extends State<RegisterPage>
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: const InputDecoration(
               labelText: 'Nome completo',
-              hintText: 'Seu nome',
               prefixIcon: Icon(Icons.person_outline_rounded),
             ),
             validator: (value) {
@@ -149,12 +184,11 @@ class _RegisterPageState extends State<RegisterPage>
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: const InputDecoration(
               labelText: 'E-mail',
-              hintText: 'seu@email.com',
               prefixIcon: Icon(Icons.email_outlined),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) return 'Informe o e-mail';
-              if (!value.contains('@')) return 'E-mail inválido';
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value)) return 'E-mail inválido';
               return null;
             },
           ),
@@ -165,7 +199,6 @@ class _RegisterPageState extends State<RegisterPage>
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: InputDecoration(
               labelText: 'Senha',
-              hintText: '••••••••',
               prefixIcon: const Icon(Icons.lock_outline_rounded),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -178,6 +211,28 @@ class _RegisterPageState extends State<RegisterPage>
             validator: (value) {
               if (value == null || value.isEmpty) return 'Informe a senha';
               if (value.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _confirmaSenhaController,
+            obscureText: _obscureConfirmaSenha,
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: InputDecoration(
+              labelText: 'Confirme a senha',
+              prefixIcon: const Icon(Icons.lock_outline_rounded),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscureConfirmaSenha ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  color: AppTheme.textSecondary,
+                ),
+                onPressed: () => setState(() => _obscureConfirmaSenha = !_obscureConfirmaSenha),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'Confirme sua senha';
+              if (value != _senhaController.text) return 'As senhas não coincidem';
               return null;
             },
           ),

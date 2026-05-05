@@ -44,10 +44,15 @@ export function getUsuarioById(id_usuario: number) {
   });
 }
 
-export function updateUsuario(id_usuario: number, data: Prisma.tb_usuarioUncheckedUpdateInput) {
+export async function updateUsuario(id_usuario: number, data: type.UsuarioUpdateDTO) {
+  const updateData: Prisma.tb_usuarioUncheckedUpdateInput = {};
+  if (data.nome !== undefined) updateData.nome = data.nome;
+  if (data.email !== undefined) updateData.email = data.email;
+  if (data.senha !== undefined) updateData.hash_senha = await bcrypt.hash(data.senha, 10);
+
   return prisma.tb_usuario.update({
     where: { id_usuario },
-    data
+    data: updateData
   });
 }
 
