@@ -19,6 +19,29 @@ class _UserPageState extends State<UserPage> {
   final _apiService = ApiService();
   bool _obscureSenha = true;
   bool _isLoading = false;
+  bool _isLoadingData = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsuario();
+  }
+
+  Future<void> _loadUsuario() async {
+    try {
+      final data = await _apiService.getUsuario();
+      if (mounted) {
+        _nomeController.text = data['nome'] as String? ?? '';
+        _emailController.text = data['email'] as String? ?? '';
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        _showErrorSnackBar(e.toString().replaceFirst('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoadingData = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -108,23 +131,25 @@ class _UserPageState extends State<UserPage> {
         title: const Text('Meu Perfil'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => context.go(AppRouter.dashboard),
+          onPressed: () => context.go(AppRouter.sugestoes),
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 40),
-              _buildForm(),
-              const SizedBox(height: 24),
-              _buildSaveButton(),
-            ],
-          ),
-        ),
+        child: _isLoadingData
+            ? const Center(child: CircularProgressIndicator(color: AppTheme.accent))
+            : SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 40),
+                    _buildForm(),
+                    const SizedBox(height: 24),
+                    _buildSaveButton(),
+                  ],
+                ),
+              ),
       ),
       bottomNavigationBar: _buildBottomNav(context, 3),
     );
@@ -176,7 +201,6 @@ class _UserPageState extends State<UserPage> {
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: const InputDecoration(
               labelText: 'Nome',
-              hintText: 'Novo nome',
               prefixIcon: Icon(Icons.person_outline_rounded),
             ),
             validator: (value) {
@@ -193,7 +217,6 @@ class _UserPageState extends State<UserPage> {
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: const InputDecoration(
               labelText: 'E-mail',
-              hintText: 'Novo e-mail',
               prefixIcon: Icon(Icons.email_outlined),
             ),
             validator: (value) {
@@ -212,7 +235,6 @@ class _UserPageState extends State<UserPage> {
             style: const TextStyle(color: AppTheme.textPrimary),
             decoration: InputDecoration(
               labelText: 'Nova senha',
-              hintText: '••••••••',
               prefixIcon: const Icon(Icons.lock_outline_rounded),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -262,7 +284,7 @@ class _UserPageState extends State<UserPage> {
       onDestinationSelected: (index) {
         switch (index) {
           case 0:
-            context.go(AppRouter.dashboard);
+            context.go(AppRouter.sugestoes);
             break;
           case 1:
             context.go(AppRouter.rating);
@@ -277,9 +299,9 @@ class _UserPageState extends State<UserPage> {
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home_rounded, color: AppTheme.accent),
-          label: 'Início',
+          icon: Icon(Icons.lightbulb_outline),
+          selectedIcon: Icon(Icons.lightbulb_rounded, color: AppTheme.accent),
+          label: 'Sugestões',
         ),
         NavigationDestination(
           icon: Icon(Icons.star_outline_rounded),

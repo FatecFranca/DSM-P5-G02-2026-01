@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import '../../pages/login_page.dart';
 import '../../pages/register_page.dart';
-import '../../pages/dashboard_page.dart';
+import '../../pages/sugestoes_page.dart';
 import '../../pages/user_page.dart';
 import '../../pages/rating_page.dart';
 import '../../pages/rating_history_page.dart';
@@ -9,7 +9,7 @@ import '../../pages/rating_history_page.dart';
 class AppRouter {
   static const String login = '/login';
   static const String register = '/register';
-  static const String dashboard = '/dashboard';
+  static const String sugestoes = '/sugestoes';
   static const String user = '/user';
   static const String rating = '/rating';
   static const String ratingHistory = '/rating-history';
@@ -29,9 +29,9 @@ class AppRouter {
         builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
-        path: dashboard,
-        name: 'dashboard',
-        builder: (context, state) => const DashboardPage(),
+        path: sugestoes,
+        name: 'sugestoes',
+        builder: (context, state) => const SugestoesPage(),
       ),
       GoRoute(
         path: user,

@@ -62,7 +62,7 @@ class RatingHistoryPage extends StatelessWidget {
       onDestinationSelected: (index) {
         switch (index) {
           case 0:
-            context.go(AppRouter.dashboard);
+            context.go(AppRouter.sugestoes);
             break;
           case 1:
             context.go(AppRouter.rating);
@@ -77,9 +77,9 @@ class RatingHistoryPage extends StatelessWidget {
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home_rounded, color: AppTheme.accent),
-          label: 'Início',
+          icon: Icon(Icons.lightbulb_outline),
+          selectedIcon: Icon(Icons.lightbulb_rounded, color: AppTheme.accent),
+          label: 'Sugestões',
         ),
         NavigationDestination(
           icon: Icon(Icons.star_outline_rounded),

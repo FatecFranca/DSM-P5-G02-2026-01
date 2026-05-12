@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage>
       debugPrint('Token recebido: $token');
 
       if (mounted) {
-        context.go(AppRouter.dashboard);
+        context.go(AppRouter.sugestoes);
       }
     } on Exception catch (e) {
       if (mounted) {

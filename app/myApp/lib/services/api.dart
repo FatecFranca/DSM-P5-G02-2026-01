@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  static const String _baseUrl = 'https://api-qualquer.canadacentral.cloudapp.azure.com';
+  static const String _baseUrl = 'https://match-place-api.canadacentral.cloudapp.azure.com';
 
   static String? token;
   static int? userId;
@@ -84,6 +84,30 @@ class ApiService {
       throw Exception('Sessão expirada. Faça login novamente.');
     } else {
       throw Exception('Erro ${response.statusCode}: ${response.body}');
+    }
+  }
+
+  Future<Map<String, dynamic>> getUsuario() async {
+    if (userId == null || token == null) {
+      throw Exception('Usuário não autenticado.');
+    }
+
+    final url = Uri.parse('$_baseUrl/usuarios/$userId');
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data['data'] as Map<String, dynamic>;
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao buscar dados do usuário (${response.statusCode}).');
     }
   }
 

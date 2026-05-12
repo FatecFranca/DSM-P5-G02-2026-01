@@ -3,15 +3,14 @@ import 'package:go_router/go_router.dart';
 import '../router/app_router.dart';
 import '../theme/app_theme.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class SugestoesPage extends StatelessWidget {
+  const SugestoesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
-
+        title: const Text('Sugestões'),
       ),
       body: SafeArea(
         child: Center(
@@ -30,14 +29,14 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
                 child: const Icon(
-                  Icons.dashboard_rounded,
+                  Icons.lightbulb_rounded,
                   color: AppTheme.accent,
                   size: 40,
                 ),
               ),
               const SizedBox(height: 24),
               const Text(
-                'Dashboard',
+                'Sugestões',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -65,7 +64,7 @@ class DashboardPage extends StatelessWidget {
       onDestinationSelected: (index) {
         switch (index) {
           case 0:
-            context.go(AppRouter.dashboard);
+            context.go(AppRouter.sugestoes);
             break;
           case 1:
             context.go(AppRouter.rating);
@@ -80,9 +79,9 @@ class DashboardPage extends StatelessWidget {
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home_rounded, color: AppTheme.accent),
-          label: 'Início',
+          icon: Icon(Icons.lightbulb_outline),
+          selectedIcon: Icon(Icons.lightbulb_rounded, color: AppTheme.accent),
+          label: 'Sugestões',
         ),
         NavigationDestination(
           icon: Icon(Icons.star_outline_rounded),
