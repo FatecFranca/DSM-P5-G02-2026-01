@@ -5,10 +5,15 @@ import 'package:http/http.dart' as http;
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
-  static const String _baseUrl = 'https://match-place-api.canadacentral.cloudapp.azure.com';
+  static const String _baseUrl = 'http://localhost:8080';
 
   static String? token;
   static int? userId;
+
+  static void logout() {
+    token = null;
+    userId = null;
+  }
 
   static Map<String, dynamic> _decodeJwtPayload(String jwt) {
     final payload = jwt.split('.')[1];
@@ -127,6 +132,107 @@ class ApiService {
       throw Exception('Sessão expirada. Faça login novamente.');
     } else {
       throw Exception('Erro ao buscar dados do usuário (${response.statusCode}).');
+    }
+  }
+
+  Map<String, String> _authHeaders() {
+    if (token == null) {
+      throw Exception('Usuário não autenticado.');
+    }
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> listEstabelecimentos() async {
+    final url = Uri.parse('$_baseUrl/estabelecimentos');
+    final response = await http.get(url, headers: _authHeaders());
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
+      return data
+          .whereType<Map<String, dynamic>>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList();
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao listar estabelecimentos (${response.statusCode}).');
+    }
+  }
+
+  Future<Map<String, dynamic>> createInteracao({
+    required int idEstabelecimento,
+    required String tipoEvento,
+    double? valor,
+    String? origem,
+  }) async {
+    final url = Uri.parse('$_baseUrl/interacoes');
+    final body = <String, dynamic>{
+      'id_estabelecimento': idEstabelecimento,
+      'tipo_evento': tipoEvento,
+    };
+    if (valor != null) body['valor'] = valor;
+    if (origem != null && origem.isNotEmpty) body['origem'] = origem;
+
+    final response = await http.post(
+      url,
+      headers: _authHeaders(),
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      return Map<String, dynamic>.from(decoded['data'] ?? decoded);
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao registrar interação (${response.statusCode}): ${response.body}');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getIaSugestoes({int limit = 20}) async {
+    final url = Uri.parse('$_baseUrl/recomendacoes/ia-sugestoes?limit=$limit');
+    final response = await http.get(url, headers: _authHeaders());
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
+      return data
+          .whereType<Map<String, dynamic>>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList();
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao buscar sugestões da IA (${response.statusCode}).');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getRecomendacoes({
+    int limit = 20,
+    bool forceRefresh = false,
+  }) async {
+    final params = <String, String>{
+      'limit': '$limit',
+      if (forceRefresh) 'force_refresh': 'true',
+    };
+    final url = Uri.parse('$_baseUrl/recomendacoes').replace(queryParameters: params);
+    final response = await http.get(url, headers: _authHeaders());
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
+      return data
+          .whereType<Map<String, dynamic>>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .toList();
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao buscar recomendações (${response.statusCode}).');
     }
   }
 }

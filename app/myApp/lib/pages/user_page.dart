@@ -147,11 +147,65 @@ class _UserPageState extends State<UserPage> {
                     _buildForm(),
                     const SizedBox(height: 24),
                     _buildSaveButton(),
+                    const SizedBox(height: 16),
+                    _buildLogoutButton(),
                   ],
                 ),
               ),
       ),
       bottomNavigationBar: _buildBottomNav(context, 3),
+    );
+  }
+
+  Future<void> _handleLogout() async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.secondary,
+        title: const Text(
+          'Sair da conta?',
+          style: TextStyle(color: AppTheme.textPrimary),
+        ),
+        content: const Text(
+          'Tem certeza que deseja encerrar a sessão?',
+          style: TextStyle(color: AppTheme.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            icon: const Icon(Icons.logout_rounded, size: 18),
+            label: const Text('Sair'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
+    ApiService.logout();
+    if (!mounted) return;
+    context.go(AppRouter.login);
+  }
+
+  Widget _buildLogoutButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton.icon(
+        onPressed: _isLoading ? null : _handleLogout,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppTheme.accent,
+          side: const BorderSide(color: AppTheme.accent, width: 1.5),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        icon: const Icon(Icons.logout_rounded),
+        label: const Text('Sair da conta'),
+      ),
     );
   }
 

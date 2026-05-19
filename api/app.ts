@@ -2,12 +2,16 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 import { openApiDocument } from "./src/docs/swagger";
+import authRoutes from "./src/routes/auth";
+import usuariosRoutes from "./src/routes/usuarios";
+import estabelecimentosRoutes from "./src/routes/estabelecimentos";
+import classificacoesRoutes from "./src/routes/classificacoes";
+import classificacoesEstabelecimentosRoutes from "./src/routes/classificacoesEstabelecimentos";
+import recomendacoesRoutes from "./src/routes/recomendacoes";
+import interacoesRoutes from "./src/routes/interacoes";
 
 require("dotenv").config();
 
-
-// cors
-/*
 const normalizeOrigin = (value: string) => value.trim().replace(/\/$/, "");
 const rawCorsOrigin = process.env.CORS_ORIGIN?.trim();
 const allowAllOrigins = !rawCorsOrigin || rawCorsOrigin === "*";
@@ -18,7 +22,7 @@ const allowedOrigins = (rawCorsOrigin ?? "")
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    if (allowAllOrigins || !origin) {
+    if (allowAllOrigins || !origin || origin === "null") {
       callback(null, true);
       return;
     }
@@ -31,31 +35,26 @@ const corsOptions: cors.CorsOptions = {
     callback(new Error(`CORS bloqueado para a origem: ${origin}`));
   },
 };
-*/
+
 const app = express();
 
 app.use(express.json());
-/*
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
+app.use(express.static("public"));
 
 app.options("*", cors(corsOptions));
-*/
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Expose-Headers", "Authorization, x-access-token");
   next();
 });
-
-import authRoutes from "./src/routes/auth";
-import usuariosRoutes from "./src/routes/usuarios";
-import estabelecimentosRoutes from "./src/routes/estabelecimentos";
-import classificacoesRoutes from "./src/routes/classificacoes";
-import classificacoesEstabelecimentosRoutes from "./src/routes/classificacoesEstabelecimentos";
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
 app.use("/estabelecimentos", estabelecimentosRoutes);
 app.use("/classificacoes", classificacoesRoutes);
 app.use("/classificacoes-estabelecimentos", classificacoesEstabelecimentosRoutes);
+app.use("/recomendacoes", recomendacoesRoutes);
+app.use("/interacoes", interacoesRoutes);
 
 
 

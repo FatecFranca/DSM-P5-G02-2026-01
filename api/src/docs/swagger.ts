@@ -13,6 +13,8 @@ import {
 } from "../types/estabelecimento";
 import { ClassificacaoSchema, ClassificacaoUpdateSchema } from "../types/classificacao";
 import { ClassificacaoEstabelecimentoSchema } from "../types/classificacaoEstabelecimento";
+import { RecomendacoesQuerySchema } from "../types/recomendacao";
+import { InteracaoCreateSchema } from "../types/interacao";
 
 extendZodWithOpenApi(z);
 dotenv.config();
@@ -629,17 +631,117 @@ registerProtectedPath({
   },
 });
 
+registerProtectedPath({
+  method: "get",
+  path: "/recomendacoes",
+  description: "Lista recomendacoes personalizadas (cache ou ranking fallback por preferencias de like/dislike).",
+  tags: ["Recomendacoes"],
+  request: { query: RecomendacoesQuerySchema },
+  responses: {
+    200: {
+      description: "Recomendacoes retornadas",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    400: {
+      description: "Parametros invalidos",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+  },
+});
+
+registerProtectedPath({
+  method: "get",
+  path: "/recomendacoes/ia-sugestoes",
+  description: "Sugestoes por IA baseadas nos estabelecimentos que o usuario curtiu (semelhanca de perfil).",
+  tags: ["Recomendacoes"],
+  request: {
+    query: z.object({
+      limit: z.coerce.number().int().min(1).max(50).optional(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Sugestoes geradas",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+  },
+});
+
+registerProtectedPath({
+  method: "post",
+  path: "/interacoes",
+  description: "Registra interacao do usuario com estabelecimento (view, like, dislike, etc.).",
+  tags: ["Interacoes"],
+  request: {
+    body: { content: { "application/json": { schema: InteracaoCreateSchema } } },
+  },
+  responses: {
+    201: {
+      description: "Interacao criada",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    400: {
+      description: "Dados invalidos",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+  },
+});
+
+registerProtectedPath({
+  method: "get",
+  path: "/interacoes/me",
+  description: "Lista interacoes do usuario autenticado.",
+  tags: ["Interacoes"],
+  request: {
+    query: z.object({
+      limit: z.coerce.number().int().min(1).max(300).optional(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Lista de interacoes",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+  },
+});
+
 const generator = new OpenApiGeneratorV3(registry.definitions);
 
-const host = process.env.HOST?.trim();
-const port = process.env.PORT?.trim();
-const defaultServer = `http://localhost:${port || "3000"}`;
-const normalizedHost = host
-  ? host.startsWith("http://") || host.startsWith("https://")
-    ? host
-    : `http://${host}`
-  : defaultServer;
-const serverUrl = port && !normalizedHost.match(/:\d+$/) ? `${normalizedHost}:${port}` : normalizedHost;
+const hostFromEnv = process.env.HOST?.trim();
+const parsedHost = hostFromEnv
+  ? (() => {
+      try {
+        return new URL(hostFromEnv);
+      } catch {
+        return null;
+      }
+    })()
+  : null;
+const port = Number(process.env.PORT ?? parsedHost?.port ?? 3000);
+const serverUrl =
+  hostFromEnv && parsedHost
+    ? `${parsedHost.protocol}//${parsedHost.hostname}:${port}`
+    : `http://localhost:${port}`;
 
 export const openApiDocument = generator.generateDocument({
   openapi: "3.0.0",
