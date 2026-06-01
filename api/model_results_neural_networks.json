@@ -1,0 +1,124 @@
+{
+  "dataset": "heart_attack_processado.csv",
+  "amostras": 788,
+  "atributos": [
+    "age",
+    "gender",
+    "impluse",
+    "pressurehight",
+    "pressurelow",
+    "glucose",
+    "kcm",
+    "troponin"
+  ],
+  "split": {
+    "train": 630,
+    "test": 158
+  },
+  "resultados": [
+    {
+      "modelo": "MLP_64_32_TANH",
+      "hidden_layers": [
+        64,
+        32
+      ],
+      "activation": "tanh",
+      "acuracia": 0.9367088607594937,
+      "f1_weighted": 0.9365951021758915,
+      "precisao_weighted": 0.9367877540936297,
+      "recall_weighted": 0.9367088607594937
+    },
+    {
+      "modelo": "MLP_16_8",
+      "hidden_layers": [
+        16,
+        8
+      ],
+      "activation": "relu",
+      "acuracia": 0.9050632911392406,
+      "f1_weighted": 0.9043229140823111,
+      "precisao_weighted": 0.907281458418402,
+      "recall_weighted": 0.9050632911392406
+    },
+    {
+      "modelo": "MLP_32_16",
+      "hidden_layers": [
+        32,
+        16
+      ],
+      "activation": "relu",
+      "acuracia": 0.8544303797468354,
+      "f1_weighted": 0.8528553819900856,
+      "precisao_weighted": 0.8570847326272281,
+      "recall_weighted": 0.8544303797468354
+    },
+    {
+      "modelo": "MLP_16",
+      "hidden_layers": [
+        16
+      ],
+      "activation": "relu",
+      "acuracia": 0.8481012658227848,
+      "f1_weighted": 0.8466940980620032,
+      "precisao_weighted": 0.8498127044366908,
+      "recall_weighted": 0.8481012658227848
+    },
+    {
+      "modelo": "MLP_32",
+      "hidden_layers": [
+        32
+      ],
+      "activation": "relu",
+      "acuracia": 0.8354430379746836,
+      "f1_weighted": 0.8333915465930514,
+      "precisao_weighted": 0.8383686684480506,
+      "recall_weighted": 0.8354430379746836
+    },
+    {
+      "modelo": "MLP_8",
+      "hidden_layers": [
+        8
+      ],
+      "activation": "relu",
+      "acuracia": 0.8227848101265823,
+      "f1_weighted": 0.8205755117155938,
+      "precisao_weighted": 0.8252770138631541,
+      "recall_weighted": 0.8227848101265823
+    },
+    {
+      "modelo": "MLP_64_32",
+      "hidden_layers": [
+        64,
+        32
+      ],
+      "activation": "relu",
+      "acuracia": 0.7721518987341772,
+      "f1_weighted": 0.7655257039524671,
+      "precisao_weighted": 0.7807948448514623,
+      "recall_weighted": 0.7721518987341772
+    },
+    {
+      "modelo": "MLP_32_TANH",
+      "hidden_layers": [
+        32
+      ],
+      "activation": "tanh",
+      "acuracia": 0.7278481012658228,
+      "f1_weighted": 0.7205930241603428,
+      "precisao_weighted": 0.7314007642703606,
+      "recall_weighted": 0.7278481012658228
+    }
+  ],
+  "melhor_modelo": {
+    "modelo": "MLP_64_32_TANH",
+    "hidden_layers": [
+      64,
+      32
+    ],
+    "activation": "tanh",
+    "acuracia": 0.9367088607594937,
+    "f1_weighted": 0.9365951021758915,
+    "precisao_weighted": 0.9367877540936297,
+    "recall_weighted": 0.9367088607594937
+  }
+}

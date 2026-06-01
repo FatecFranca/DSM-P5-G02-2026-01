@@ -1,8 +1,5 @@
-// lib/services/api_service.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiService {
   static const String _baseUrl = 'http://localhost:8080';
@@ -116,25 +113,6 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> fetchUserData(String token) async {
-    final url = Uri.parse('$_baseUrl/user');
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
-    } else if (response.statusCode == 401) {
-      throw Exception('Sessão expirada. Faça login novamente.');
-    } else {
-      throw Exception('Erro ao buscar dados do usuário (${response.statusCode}).');
-    }
-  }
-
   Map<String, String> _authHeaders() {
     if (token == null) {
       throw Exception('Usuário não autenticado.');
@@ -145,37 +123,27 @@ class ApiService {
     };
   }
 
-  Future<List<Map<String, dynamic>>> listEstabelecimentos() async {
-    final url = Uri.parse('$_baseUrl/estabelecimentos');
-    final response = await http.get(url, headers: _authHeaders());
-
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
-      return data
-          .whereType<Map<String, dynamic>>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
-    } else if (response.statusCode == 401) {
-      throw Exception('Sessão expirada. Faça login novamente.');
-    } else {
-      throw Exception('Erro ao listar estabelecimentos (${response.statusCode}).');
-    }
-  }
-
-  Future<Map<String, dynamic>> createInteracao({
-    required int idEstabelecimento,
-    required String tipoEvento,
-    double? valor,
-    String? origem,
+  Future<Map<String, dynamic>> analisarRiscoAtaqueCardiaco({
+    required double age,
+    required int gender,
+    required double impluse,
+    required double pressurehight,
+    required double pressurelow,
+    required double glucose,
+    required double kcm,
+    required double troponin,
   }) async {
-    final url = Uri.parse('$_baseUrl/interacoes');
+    final url = Uri.parse('$_baseUrl/diagnosticos/risco');
     final body = <String, dynamic>{
-      'id_estabelecimento': idEstabelecimento,
-      'tipo_evento': tipoEvento,
+      'age': age,
+      'gender': gender,
+      'impluse': impluse,
+      'pressurehight': pressurehight,
+      'pressurelow': pressurelow,
+      'glucose': glucose,
+      'kcm': kcm,
+      'troponin': troponin,
     };
-    if (valor != null) body['valor'] = valor;
-    if (origem != null && origem.isNotEmpty) body['origem'] = origem;
 
     final response = await http.post(
       url,
@@ -183,56 +151,13 @@ class ApiService {
       body: jsonEncode(body),
     );
 
-    if (response.statusCode == 201 || response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body) as Map<String, dynamic>;
       return Map<String, dynamic>.from(decoded['data'] ?? decoded);
     } else if (response.statusCode == 401) {
       throw Exception('Sessão expirada. Faça login novamente.');
     } else {
-      throw Exception('Erro ao registrar interação (${response.statusCode}): ${response.body}');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getIaSugestoes({int limit = 20}) async {
-    final url = Uri.parse('$_baseUrl/recomendacoes/ia-sugestoes?limit=$limit');
-    final response = await http.get(url, headers: _authHeaders());
-
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
-      return data
-          .whereType<Map<String, dynamic>>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
-    } else if (response.statusCode == 401) {
-      throw Exception('Sessão expirada. Faça login novamente.');
-    } else {
-      throw Exception('Erro ao buscar sugestões da IA (${response.statusCode}).');
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getRecomendacoes({
-    int limit = 20,
-    bool forceRefresh = false,
-  }) async {
-    final params = <String, String>{
-      'limit': '$limit',
-      if (forceRefresh) 'force_refresh': 'true',
-    };
-    final url = Uri.parse('$_baseUrl/recomendacoes').replace(queryParameters: params);
-    final response = await http.get(url, headers: _authHeaders());
-
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = decoded['data'] as List<dynamic>? ?? const <dynamic>[];
-      return data
-          .whereType<Map<String, dynamic>>()
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
-    } else if (response.statusCode == 401) {
-      throw Exception('Sessão expirada. Faça login novamente.');
-    } else {
-      throw Exception('Erro ao buscar recomendações (${response.statusCode}).');
+      throw Exception('Erro ao analisar risco (${response.statusCode}): ${response.body}');
     }
   }
 }

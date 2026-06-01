@@ -1,6 +1,6 @@
-# Backend Base
+# HeartX API
 
-API REST em Node.js, Express, TypeScript e Prisma com autenticacao JWT, documentacao Swagger e CRUDs para organizacoes, cargos, permissoes, usuarios, logs e vinculos entre cargos/permissoes.
+API REST em Node.js, Express, TypeScript e Prisma com autenticacao JWT, documentacao Swagger e diagnostico de risco cardiaco (modelo CART).
 
 ## Stack
 

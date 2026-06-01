@@ -1,0 +1,84 @@
+{
+  "dataset": "heart_attack_processado.csv",
+  "amostras": 788,
+  "atributos": [
+    "age",
+    "gender",
+    "impluse",
+    "pressurehight",
+    "pressurelow",
+    "glucose",
+    "kcm",
+    "troponin"
+  ],
+  "split": {
+    "train": 630,
+    "test": 158
+  },
+  "resultados": [
+    {
+      "modelo": "CART",
+      "cv_mean": 0.9904761904761905,
+      "cv_std": 0.012698412698412704,
+      "acuracia_teste": 0.9746835443037974,
+      "f1_weighted": 0.9747491203587011,
+      "precisao_weighted": 0.9760707473556441,
+      "recall_weighted": 0.9746835443037974
+    },
+    {
+      "modelo": "NB",
+      "cv_mean": 0.9492063492063492,
+      "cv_std": 0.02438458967577336,
+      "acuracia_teste": 0.9683544303797469,
+      "f1_weighted": 0.968265069041347,
+      "precisao_weighted": 0.9688922799819883,
+      "recall_weighted": 0.9683544303797469
+    },
+    {
+      "modelo": "LR",
+      "cv_mean": 0.9126984126984128,
+      "cv_std": 0.04154365818508699,
+      "acuracia_teste": 0.930379746835443,
+      "f1_weighted": 0.9303201283011506,
+      "precisao_weighted": 0.9303363117398858,
+      "recall_weighted": 0.930379746835443
+    },
+    {
+      "modelo": "SVM",
+      "cv_mean": 0.8730158730158731,
+      "cv_std": 0.04199605255658081,
+      "acuracia_teste": 0.9050632911392406,
+      "f1_weighted": 0.9043229140823111,
+      "precisao_weighted": 0.907281458418402,
+      "recall_weighted": 0.9050632911392406
+    },
+    {
+      "modelo": "KNN",
+      "cv_mean": 0.753968253968254,
+      "cv_std": 0.06398617260554403,
+      "acuracia_teste": 0.8544303797468354,
+      "f1_weighted": 0.8518146994499304,
+      "precisao_weighted": 0.8616038187426869,
+      "recall_weighted": 0.8544303797468354
+    },
+    {
+      "modelo": "LDA",
+      "cv_mean": 0.8206349206349206,
+      "cv_std": 0.04262133835586524,
+      "acuracia_teste": 0.810126582278481,
+      "f1_weighted": 0.8036251812265544,
+      "precisao_weighted": 0.8262426559289378,
+      "recall_weighted": 0.810126582278481
+    }
+  ],
+  "melhor_modelo": {
+    "modelo": "CART",
+    "cv_mean": 0.9904761904761905,
+    "cv_std": 0.012698412698412704,
+    "acuracia_teste": 0.9746835443037974,
+    "f1_weighted": 0.9747491203587011,
+    "precisao_weighted": 0.9760707473556441,
+    "recall_weighted": 0.9746835443037974
+  },
+  "modelo_escolhido_para_api": "CART"
+}

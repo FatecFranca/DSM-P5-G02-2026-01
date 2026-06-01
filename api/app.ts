@@ -4,11 +4,7 @@ import cors from "cors";
 import { openApiDocument } from "./src/docs/swagger";
 import authRoutes from "./src/routes/auth";
 import usuariosRoutes from "./src/routes/usuarios";
-import estabelecimentosRoutes from "./src/routes/estabelecimentos";
-import classificacoesRoutes from "./src/routes/classificacoes";
-import classificacoesEstabelecimentosRoutes from "./src/routes/classificacoesEstabelecimentos";
-import recomendacoesRoutes from "./src/routes/recomendacoes";
-import interacoesRoutes from "./src/routes/interacoes";
+import diagnosticosRoutes from "./src/routes/diagnosticos";
 
 require("dotenv").config();
 
@@ -50,11 +46,7 @@ app.use((req, res, next) => {
 
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
-app.use("/estabelecimentos", estabelecimentosRoutes);
-app.use("/classificacoes", classificacoesRoutes);
-app.use("/classificacoes-estabelecimentos", classificacoesEstabelecimentosRoutes);
-app.use("/recomendacoes", recomendacoesRoutes);
-app.use("/interacoes", interacoesRoutes);
+app.use("/diagnosticos", diagnosticosRoutes);
 
 
 

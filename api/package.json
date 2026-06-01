@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "API Backend Base",
+  "description": "HeartX API — diagnostico de risco cardiaco",
   "main": "dist/app.js",
   "type": "commonjs",
   "scripts": {
