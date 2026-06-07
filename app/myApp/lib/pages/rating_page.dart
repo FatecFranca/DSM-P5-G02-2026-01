@@ -326,8 +326,8 @@ class _RatingPageState extends State<RatingPage> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: results.length,
-        separatorBuilder: (_, __) => Divider(
-          color: AppTheme.inputFill.withOpacity(0.4),
+        separatorBuilder: (_, _) => Divider(
+          color: AppTheme.inputFill.withValues(alpha: 0.4),
           height: 1,
         ),
         itemBuilder: (context, index) {
@@ -369,7 +369,7 @@ class _RatingPageState extends State<RatingPage> {
       decoration: BoxDecoration(
         color: AppTheme.secondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.accent.withOpacity(0.4)),
+        border: Border.all(color: AppTheme.accent.withValues(alpha:0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,7 +519,7 @@ class _RatingPageState extends State<RatingPage> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _avaliacao > 0
-              ? AppTheme.accent.withOpacity(0.4)
+              ? AppTheme.accent.withValues(alpha:0.4)
               : Colors.transparent,
         ),
       ),
@@ -596,7 +596,7 @@ class _RatingPageState extends State<RatingPage> {
   Widget _buildBottomNav(BuildContext context, int currentIndex) {
     return NavigationBar(
       backgroundColor: AppTheme.secondary,
-      indicatorColor: AppTheme.accent.withOpacity(0.2),
+      indicatorColor: AppTheme.accent.withValues(alpha:0.2),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
         switch (index) {

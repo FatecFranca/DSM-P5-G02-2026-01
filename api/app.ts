@@ -49,7 +49,6 @@ app.use("/usuarios", usuariosRoutes);
 app.use("/diagnosticos", diagnosticosRoutes);
 
 
-
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 app.get("/", (req, res) => {

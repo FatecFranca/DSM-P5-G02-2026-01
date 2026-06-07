@@ -127,7 +127,7 @@ class _SugestoesPageState extends State<SugestoesPage> {
         decoration: BoxDecoration(
           color: AppTheme.secondary,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.accent.withOpacity(0.3)),
+          border: Border.all(color: AppTheme.accent.withValues(alpha:0.3)),
         ),
         child: Row(
           children: [
@@ -135,7 +135,7 @@ class _SugestoesPageState extends State<SugestoesPage> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: AppTheme.accent.withOpacity(0.15),
+                color: AppTheme.accent.withValues(alpha:0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(Icons.auto_awesome_rounded, color: AppTheme.accent),
@@ -202,7 +202,7 @@ class _SugestoesPageState extends State<SugestoesPage> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppTheme.accent.withOpacity(0.15),
+                      color: AppTheme.accent.withValues(alpha:0.15),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -231,7 +231,7 @@ class _SugestoesPageState extends State<SugestoesPage> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.inputFill.withOpacity(0.6),
+                  color: AppTheme.inputFill.withValues(alpha:0.6),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -305,9 +305,9 @@ class _SugestoesPageState extends State<SugestoesPage> {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppTheme.accent.withOpacity(0.15),
+              color: AppTheme.accent.withValues(alpha:0.15),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppTheme.accent.withOpacity(0.3)),
+              border: Border.all(color: AppTheme.accent.withValues(alpha:0.3)),
             ),
             child: Icon(icon, color: AppTheme.accent, size: 32),
           ),
@@ -345,7 +345,7 @@ class _SugestoesPageState extends State<SugestoesPage> {
   Widget _buildBottomNav(BuildContext context, int currentIndex) {
     return NavigationBar(
       backgroundColor: AppTheme.secondary,
-      indicatorColor: AppTheme.accent.withOpacity(0.2),
+      indicatorColor: AppTheme.accent.withValues(alpha:0.2),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
         switch (index) {

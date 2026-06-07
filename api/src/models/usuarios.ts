@@ -2,11 +2,10 @@ import { Prisma } from "../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import bcrypt from "bcrypt";
 import * as type from "../types/usuario";
-import e from "express";
 
-function badRequest(message: string) {
+function makeError(message: string, statusCode: number) {
   const error = new Error(message) as Error & { statusCode: number };
-  error.statusCode = 400;
+  error.statusCode = statusCode;
   return error;
 }
 
@@ -15,8 +14,6 @@ function isBcryptHash(value: string) {
 }
 
 export async function createUsuario(data: type.UsuarioDTO) {
- 
-
   const senhaHash = isBcryptHash(data.hash_senha)
     ? data.hash_senha
     : await bcrypt.hash(data.hash_senha, 10);
@@ -30,7 +27,13 @@ export async function createUsuario(data: type.UsuarioDTO) {
       }
     });
   } catch (error) {
-    return error instanceof Error
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw makeError("E-mail já cadastrado.", 409);
+    }
+    throw error;
   }
 }
 

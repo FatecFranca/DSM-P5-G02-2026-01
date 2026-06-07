@@ -6,20 +6,20 @@
     "configurations": [
         {
             "name": "myApp",
-            "cwd": "myApp",
+            "cwd": "app\\myApp",
             "request": "launch",
             "type": "dart"
         },
         {
             "name": "myApp (profile mode)",
-            "cwd": "myApp",
+            "cwd": "app\\myApp",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
             "name": "myApp (release mode)",
-            "cwd": "myApp",
+            "cwd": "app\\myApp",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

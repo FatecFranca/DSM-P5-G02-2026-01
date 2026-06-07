@@ -1,8 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String _baseUrl = 'http://localhost:8080';
+  static String get _baseUrl {
+    if (kIsWeb) return 'http://localhost:3000';
+    if (Platform.isAndroid) return 'http://10.0.2.2:3000';
+    return 'http://localhost:3000';
+  }
 
   static String? token;
   static int? userId;
@@ -56,7 +62,8 @@ class ApiService {
     if (response.statusCode == 201) {
       return;
     } else {
-      throw Exception('Erro ${response.statusCode}: ${response.body}');
+      final msg = _extractMessage(response.body) ?? 'Erro ${response.statusCode}';
+      throw Exception(msg);
     }
   }
 
@@ -113,6 +120,15 @@ class ApiService {
     }
   }
 
+  static String? _extractMessage(String body) {
+    try {
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      return (json['message'] ?? json['error'])?.toString();
+    } catch (_) {
+      return null;
+    }
+  }
+
   Map<String, String> _authHeaders() {
     if (token == null) {
       throw Exception('Usuário não autenticado.');
@@ -158,6 +174,64 @@ class ApiService {
       throw Exception('Sessão expirada. Faça login novamente.');
     } else {
       throw Exception('Erro ao analisar risco (${response.statusCode}): ${response.body}');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> listEstabelecimentos() async {
+    final url = Uri.parse('$_baseUrl/estabelecimentos');
+    final response = await http.get(url, headers: _authHeaders());
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = decoded['data'];
+      if (data is List) {
+        return data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao listar estabelecimentos (${response.statusCode}): ${response.body}');
+    }
+  }
+
+  Future<void> createInteracao({
+    required int idEstabelecimento,
+    required String tipoEvento,
+    double? valor,
+    String? origem,
+    String? regiao,
+  }) async {
+    final url = Uri.parse('$_baseUrl/interacoes');
+    final body = <String, dynamic>{
+      'id_estabelecimento': idEstabelecimento,
+      'tipo_evento': tipoEvento,
+      'valor': ?valor,
+      'origem': ?origem,
+      'regiao': ?regiao,
+    };
+    final response = await http.post(url, headers: _authHeaders(), body: jsonEncode(body));
+
+    if (response.statusCode == 201) return;
+    if (response.statusCode == 401) throw Exception('Sessão expirada. Faça login novamente.');
+    throw Exception('Erro ao registrar interação (${response.statusCode}): ${response.body}');
+  }
+
+  Future<List<Map<String, dynamic>>> getIaSugestoes({int limit = 10}) async {
+    final url = Uri.parse('$_baseUrl/recomendacoes/ia-sugestoes?limit=$limit');
+    final response = await http.get(url, headers: _authHeaders());
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = decoded['data'];
+      if (data is List) {
+        return data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+      return [];
+    } else if (response.statusCode == 401) {
+      throw Exception('Sessão expirada. Faça login novamente.');
+    } else {
+      throw Exception('Erro ao buscar sugestões da IA (${response.statusCode}): ${response.body}');
     }
   }
 }
