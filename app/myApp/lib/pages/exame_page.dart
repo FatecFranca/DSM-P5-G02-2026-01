@@ -16,7 +16,7 @@ class _ExamePageState extends State<ExamePage> {
   final _api = ApiService();
 
   final _age = TextEditingController();
-  final _gender = TextEditingController();
+  int? _selectedGender;
   final _impluse = TextEditingController();
   final _pressurehight = TextEditingController();
   final _pressurelow = TextEditingController();
@@ -30,7 +30,6 @@ class _ExamePageState extends State<ExamePage> {
   @override
   void dispose() {
     _age.dispose();
-    _gender.dispose();
     _impluse.dispose();
     _pressurehight.dispose();
     _pressurelow.dispose();
@@ -50,12 +49,22 @@ class _ExamePageState extends State<ExamePage> {
 
   Future<void> _enviar() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedGender == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, selecione uma opção para o Sexo (0 ou 1).'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() => _loading = true);
 
     try {
       final data = await _api.analisarRiscoAtaqueCardiaco(
         age: double.parse(_age.text.replaceAll(',', '.')),
-        gender: double.parse(_gender.text.replaceAll(',', '.')).toInt(),
+        gender: _selectedGender!,  
         impluse: double.parse(_impluse.text.replaceAll(',', '.')),
         pressurehight: double.parse(_pressurehight.text.replaceAll(',', '.')),
         pressurelow: double.parse(_pressurelow.text.replaceAll(',', '.')),
@@ -109,7 +118,49 @@ class _ExamePageState extends State<ExamePage> {
                 ),
                 const SizedBox(height: 16),
                 _field('Idade (age)', _age),
-                _field('Sexo (gender: 0=feminino, 1=masculino)', _gender, isGender: true),
+                const Padding(
+                  padding: EdgeInsets.only(top: 8, bottom: 4),
+                  child: Text(
+                    'Sexo (gender):',
+                    style: TextStyle(
+                      color: AppTheme.textPrimary, 
+                      fontSize: 16, 
+                      fontWeight: FontWeight.w500
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile<int>(
+                        title: const Text('0 (Feminino)'),
+                        value: 0,
+                        groupValue: _selectedGender,
+                        contentPadding: EdgeInsets.zero,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile<int>(
+                        title: const Text('1 (Masculino)'),
+                        value: 1,
+                        groupValue: _selectedGender,
+                        contentPadding: EdgeInsets.zero,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
                 _field('Pulso (impluse)', _impluse),
                 _field('Pressão sistólica (pressurehight)', _pressurehight),
                 _field('Pressão diastólica (pressurelow)', _pressurelow),
