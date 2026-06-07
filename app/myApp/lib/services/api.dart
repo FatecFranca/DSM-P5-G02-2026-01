@@ -1,14 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static String get _baseUrl {
-    if (kIsWeb) return 'http://localhost:3000';
-    if (Platform.isAndroid) return 'http://10.0.2.2:3000';
-    return 'http://localhost:3000';
-  }
+  static const String _baseUrl = 'https://cardio-predict-api.canadacentral.cloudapp.azure.com';
 
   static String? token;
   static int? userId;
@@ -62,8 +56,7 @@ class ApiService {
     if (response.statusCode == 201) {
       return;
     } else {
-      final msg = _extractMessage(response.body) ?? 'Erro ${response.statusCode}';
-      throw Exception(msg);
+      throw Exception('Erro ${response.statusCode}: ${response.body}');
     }
   }
 
@@ -117,15 +110,6 @@ class ApiService {
       throw Exception('Sessão expirada. Faça login novamente.');
     } else {
       throw Exception('Erro ao buscar dados do usuário (${response.statusCode}).');
-    }
-  }
-
-  static String? _extractMessage(String body) {
-    try {
-      final json = jsonDecode(body) as Map<String, dynamic>;
-      return (json['message'] ?? json['error'])?.toString();
-    } catch (_) {
-      return null;
     }
   }
 
