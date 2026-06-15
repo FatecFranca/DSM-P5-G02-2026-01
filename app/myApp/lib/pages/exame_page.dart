@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../router/app_router.dart';
 import '../services/api.dart';
@@ -247,7 +248,7 @@ class _ExamePageState extends State<ExamePage> {
                   style: TextStyle(color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 16),
-                _field('Idade (age)', _age),
+                _field('Idade (age)', _age, inteiro: true),
                 const Padding(
                   padding: EdgeInsets.only(top: 8, bottom: 4),
                   child: Text(
@@ -283,10 +284,10 @@ class _ExamePageState extends State<ExamePage> {
                 ),
                 const SizedBox(height: 12),
 
-                _field('Pulso (impluse)', _impluse),
-                _field('Pressão sistólica (pressurehight)', _pressurehight),
-                _field('Pressão diastólica (pressurelow)', _pressurelow),
-                _field('Glicose (glucose)', _glucose),
+                _field('Pulso (impluse)', _impluse, inteiro: true),
+                _field('Pressão sistólica (pressurehight)', _pressurehight, inteiro: true),
+                _field('Pressão diastólica (pressurelow)', _pressurelow, inteiro: true),
+                _field('Glicose (glucose)', _glucose, inteiro: true),
                 _field('CK-MB (kcm)', _kcm),
                 _field('Troponina (troponin)', _troponin),
                 const SizedBox(height: 16),
@@ -345,12 +346,18 @@ class _ExamePageState extends State<ExamePage> {
     );
   }
 
-  Widget _field(String label, TextEditingController controller, {bool isGender = false}) {
+  Widget _field(String label, TextEditingController controller, {bool isGender = false, bool inteiro = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: controller,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        keyboardType: inteiro
+            ? TextInputType.number
+            : const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          if (inteiro) FilteringTextInputFormatter.digitsOnly
+          else _DecimalInputFormatter(),
+        ],
         style: const TextStyle(color: AppTheme.textPrimary),
         decoration: InputDecoration(labelText: label),
         validator: (value) => _requiredNumber(value, isGender: isGender),
@@ -358,4 +365,14 @@ class _ExamePageState extends State<ExamePage> {
     );
   }
 
+}
+
+class _DecimalInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue old, TextEditingValue value) {
+    final text = value.text;
+    if (text.isEmpty) return value;
+    if (RegExp(r'^\d*[,.]?\d*$').hasMatch(text)) return value;
+    return old;
+  }
 }
