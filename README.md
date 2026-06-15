@@ -1,4 +1,4 @@
-# HeartX
+# Cardio Predict
 
 Aplicacao para avaliacao de risco de ataque cardiaco com base em exames clinicos.
 
