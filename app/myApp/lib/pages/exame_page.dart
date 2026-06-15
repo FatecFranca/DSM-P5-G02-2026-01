@@ -25,7 +25,6 @@ class _ExamePageState extends State<ExamePage> {
   final _troponin = TextEditingController();
 
   bool _loading = false;
-  Map<String, dynamic>? _resultado;
 
   @override
   void dispose() {
@@ -74,7 +73,6 @@ class _ExamePageState extends State<ExamePage> {
       );
 
       if (!mounted) return;
-      setState(() => _resultado = data);
       _mostrarModalResultado(data);
     } catch (e) {
       if (!mounted) return;
@@ -87,6 +85,17 @@ class _ExamePageState extends State<ExamePage> {
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  void _limparFormulario() {
+    _age.clear();
+    _impluse.clear();
+    _pressurehight.clear();
+    _pressurelow.clear();
+    _glucose.clear();
+    _kcm.clear();
+    _troponin.clear();
+    setState(() => _selectedGender = null);
   }
 
   void _mostrarModalResultado(Map<String, dynamic> data) {
@@ -130,10 +139,7 @@ class _ExamePageState extends State<ExamePage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          'Probabilidade estimada: $chance%',
-                          style: const TextStyle(color: AppTheme.textPrimary),
-                        ),
+                        
                         const SizedBox(height: 4),
                         const Text(
                           'Resultado preliminar. Não substitui avaliação médica.',
@@ -172,6 +178,7 @@ class _ExamePageState extends State<ExamePage> {
                                           if (!dialogCtx.mounted) return;
                                           Navigator.of(dialogCtx).pop();
                                           if (!mounted) return;
+                                          _limparFormulario();
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
                                               content: Row(
@@ -300,8 +307,6 @@ class _ExamePageState extends State<ExamePage> {
                     label: Text(_loading ? 'Analisando...' : 'Analisar risco'),
                   ),
                 ),
-                const SizedBox(height: 18),
-                if (_resultado != null) _resultadoCard(),
               ],
             ),
           ),
@@ -353,43 +358,4 @@ class _ExamePageState extends State<ExamePage> {
     );
   }
 
-  Widget _resultadoCard() {
-    final temChance = (_resultado!['tem_chance'] as bool?) ?? false;
-    final chance = (_resultado!['chance_percentual'] ?? 0).toString();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.secondary,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: temChance ? Colors.redAccent : Colors.greenAccent,
-          width: 1.2,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            temChance ? 'Há chance de ataque cardíaco' : 'Baixa chance de ataque cardíaco',
-            style: TextStyle(
-              color: temChance ? Colors.redAccent : Colors.greenAccent,
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Probabilidade estimada: $chance%',
-            style: const TextStyle(color: AppTheme.textPrimary),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Resultado preliminar baseado na base tratada. Não substitui avaliação médica.',
-            style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
 }

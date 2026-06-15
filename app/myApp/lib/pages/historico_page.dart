@@ -303,7 +303,6 @@ class _EditarExameSheetState extends State<_EditarExameSheet> {
   late final TextEditingController _ckMb;
   late final TextEditingController _troponina;
   late int _sexo;
-  late bool _result;
   bool _salvando = false;
 
   @override
@@ -318,7 +317,6 @@ class _EditarExameSheetState extends State<_EditarExameSheet> {
     _ckMb = TextEditingController(text: e['ck_mb']?.toString() ?? '');
     _troponina = TextEditingController(text: e['troponina']?.toString() ?? '');
     _sexo = (e['sexo'] as bool?) == true ? 1 : 0;
-    _result = (e['result'] as bool?) ?? false;
   }
 
   @override
@@ -352,7 +350,6 @@ class _EditarExameSheetState extends State<_EditarExameSheet> {
         'glicose': double.parse(_glicose.text.replaceAll(',', '.')),
         'ck_mb': double.parse(_ckMb.text.replaceAll(',', '.')),
         'troponina': double.parse(_troponina.text.replaceAll(',', '.')),
-        'result': _result,
       });
       widget.onSaved();
     } catch (e) {
@@ -449,36 +446,6 @@ class _EditarExameSheetState extends State<_EditarExameSheet> {
                 _field('Glicose', _glicose),
                 _field('CK-MB', _ckMb),
                 _field('Troponina', _troponina),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 4),
-                  child: Text('Resultado:',
-                      style: TextStyle(
-                          color: AppTheme.textPrimary,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16)),
-                ),
-                RadioGroup<bool>(
-                  groupValue: _result,
-                  onChanged: (v) => setState(() => _result = v!),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: RadioListTile<bool>(
-                          title: const Text('Baixo risco'),
-                          value: false,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile<bool>(
-                          title: const Text('Alto risco'),
-                          value: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 50,
