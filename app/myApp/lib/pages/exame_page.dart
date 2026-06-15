@@ -75,6 +75,7 @@ class _ExamePageState extends State<ExamePage> {
 
       if (!mounted) return;
       setState(() => _resultado = data);
+      _mostrarModalResultado(data);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,21 +89,143 @@ class _ExamePageState extends State<ExamePage> {
     }
   }
 
+  void _mostrarModalResultado(Map<String, dynamic> data) {
+    final temChance = (data['tem_chance'] as bool?) ?? false;
+    final chance = (data['chance_percentual'] ?? 0).toString();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) {
+        bool salvando = false;
+        return StatefulBuilder(
+          builder: (_, setModalState) {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 48, left: 20, right: 20),
+                child: Material(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AppTheme.secondary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          temChance ? Icons.warning_rounded : Icons.check_circle_rounded,
+                          color: temChance ? Colors.redAccent : Colors.green,
+                          size: 40,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          temChance
+                              ? 'Há chance de ataque cardíaco'
+                              : 'Baixa chance de ataque cardíaco',
+                          style: TextStyle(
+                            color: temChance ? Colors.redAccent : Colors.green,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Probabilidade estimada: $chance%',
+                          style: const TextStyle(color: AppTheme.textPrimary),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Resultado preliminar. Não substitui avaliação médica.',
+                          style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: salvando ? null : () => Navigator.of(dialogCtx).pop(),
+                                child: const Text('Não salvar'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: salvando
+                                    ? null
+                                    : () async {
+                                        setModalState(() => salvando = true);
+                                        try {
+                                          await _api.salvarExame(
+                                            idUsuario: ApiService.userId!,
+                                            idade: int.parse(_age.text),
+                                            sexo: _selectedGender == 1,
+                                            pulso: double.parse(_impluse.text.replaceAll(',', '.')),
+                                            pressaoSistolica: double.parse(_pressurehight.text.replaceAll(',', '.')),
+                                            pressaoDiastolica: double.parse(_pressurelow.text.replaceAll(',', '.')),
+                                            glicose: double.parse(_glucose.text.replaceAll(',', '.')),
+                                            ckMb: double.parse(_kcm.text.replaceAll(',', '.')),
+                                            troponina: double.parse(_troponin.text.replaceAll(',', '.')),
+                                            result: temChance,
+                                          );
+                                          if (!dialogCtx.mounted) return;
+                                          Navigator.of(dialogCtx).pop();
+                                          if (!mounted) return;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Row(
+                                                children: [
+                                                  Icon(Icons.check, color: Colors.white),
+                                                  SizedBox(width: 8),
+                                                  Text('Exame salvo com sucesso!'),
+                                                ],
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          setModalState(() => salvando = false);
+                                          if (!mounted) return;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(e.toString().replaceFirst('Exception: ', '')),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                child: salvando
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text('Salvar'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Risco de Ataque Cardíaco'),
-        actions: [
-          IconButton(
-            tooltip: 'Sair',
-            onPressed: () {
-              ApiService.logout();
-              context.go(AppRouter.login);
-            },
-            icon: const Icon(Icons.logout_rounded),
-          ),
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -123,41 +246,33 @@ class _ExamePageState extends State<ExamePage> {
                   child: Text(
                     'Sexo (gender):',
                     style: TextStyle(
-                      color: AppTheme.textPrimary, 
-                      fontSize: 16, 
+                      color: AppTheme.textPrimary,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500
                     ),
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: RadioListTile<int>(
-                        title: const Text('0 (Feminino)'),
-                        value: 0,
-                        groupValue: _selectedGender,
-                        contentPadding: EdgeInsets.zero,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
+                RadioGroup<int>(
+                  groupValue: _selectedGender,
+                  onChanged: (value) => setState(() => _selectedGender = value),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<int>(
+                          title: const Text('0 (Feminino)'),
+                          value: 0,
+                          contentPadding: EdgeInsets.zero,
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: RadioListTile<int>(
-                        title: const Text('1 (Masculino)'),
-                        value: 1,
-                        groupValue: _selectedGender,
-                        contentPadding: EdgeInsets.zero,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
+                      Expanded(
+                        child: RadioListTile<int>(
+                          title: const Text('1 (Masculino)'),
+                          value: 1,
+                          contentPadding: EdgeInsets.zero,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -192,6 +307,36 @@ class _ExamePageState extends State<ExamePage> {
           ),
         ),
       ),
+      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildBottomNav(BuildContext context) {
+    return NavigationBar(
+      backgroundColor: AppTheme.background,
+      indicatorColor: AppTheme.accent.withValues(alpha: 0.2),
+      selectedIndex: 0,
+      onDestinationSelected: (index) {
+        if (index == 1) context.go(AppRouter.historico);
+        if (index == 2) context.go(AppRouter.user);
+      },
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.monitor_heart_outlined),
+          selectedIcon: Icon(Icons.monitor_heart_rounded, color: AppTheme.accent),
+          label: 'Exame',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.history_outlined),
+          selectedIcon: Icon(Icons.history_rounded, color: AppTheme.accent),
+          label: 'Histórico',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.person_outline_rounded),
+          selectedIcon: Icon(Icons.person_rounded, color: AppTheme.accent),
+          label: 'Perfil',
+        ),
+      ],
     );
   }
 

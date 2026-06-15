@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import { loginSchema } from "../types/authSchema";
 import { UsuarioSchema, UsuarioUpdateSchema } from "../types/usuario";
 import { DiagnosticoInputSchema } from "../types/diagnostico";
+import { ExameSchema, ExameUpdateSchema } from "../types/exame";
 
 extendZodWithOpenApi(z);
 dotenv.config();
@@ -274,6 +275,139 @@ registerProtectedPath({
     },
     400: {
       description: "Dados de exame invalidos",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+  },
+});
+
+const exameResponseSchema = ExameSchema.extend({
+  id_exame: z.number().int(),
+  created_at: z.date(),
+  updated_at: z.date(),
+});
+
+registerProtectedPath({
+  method: "post",
+  path: "/exames",
+  description: "Cria um exame.",
+  tags: ["Exames"],
+  request: {
+    body: { content: { "application/json": { schema: ExameSchema } } },
+  },
+  responses: {
+    201: {
+      description: "Exame criado com sucesso",
+      content: { "application/json": { schema: singleItemResponse(exameResponseSchema) } },
+    },
+    400: {
+      description: "Erro de validacao",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+  },
+});
+
+registerProtectedPath({
+  method: "get",
+  path: "/exames",
+  description: "Lista exames.",
+  tags: ["Exames"],
+  responses: {
+    200: {
+      description: "Exames listados com sucesso",
+      content: { "application/json": { schema: listResponse(exameResponseSchema) } },
+    },
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+  },
+});
+
+registerProtectedPath({
+  method: "get",
+  path: "/exames/{id}",
+  description: "Busca exame por ID.",
+  tags: ["Exames"],
+  request: { params: idParamSchema },
+  responses: {
+    200: {
+      description: "Exame encontrado",
+      content: { "application/json": { schema: singleItemResponse(exameResponseSchema) } },
+    },
+    400: {
+      description: "ID invalido",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    404: {
+      description: "Registro nao encontrado",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+  },
+});
+
+registerProtectedPath({
+  method: "put",
+  path: "/exames/{id}",
+  description: "Atualiza exame por ID.",
+  tags: ["Exames"],
+  request: {
+    params: idParamSchema,
+    body: { content: { "application/json": { schema: ExameUpdateSchema } } },
+  },
+  responses: {
+    200: {
+      description: "Exame atualizado com sucesso",
+      content: { "application/json": { schema: singleItemResponse(exameResponseSchema) } },
+    },
+    400: {
+      description: "Erro de validacao ou ID invalido",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    404: {
+      description: "Registro nao encontrado",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    500: {
+      description: "Erro interno",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    401: unauthorizedResponse,
+  },
+});
+
+registerProtectedPath({
+  method: "delete",
+  path: "/exames/{id}",
+  description: "Remove exame por ID.",
+  tags: ["Exames"],
+  request: { params: idParamSchema },
+  responses: {
+    200: {
+      description: "Exame removido com sucesso",
+      content: { "application/json": { schema: deleteSuccessResponseSchema } },
+    },
+    400: {
+      description: "ID invalido",
+      content: { "application/json": { schema: errorResponseSchema } },
+    },
+    404: {
+      description: "Registro nao encontrado",
       content: { "application/json": { schema: errorResponseSchema } },
     },
     500: {

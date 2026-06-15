@@ -8,13 +8,33 @@ datasource db {
 }
 
 model tb_usuario {
-  id_usuario  Int      @id @default(autoincrement())
+  id_usuario  Int        @id @default(autoincrement())
   url_imagem  String?
   nome        String
-  email       String   @unique
+  email       String     @unique
   telefone    String?
   hash_senha  String
-  ativo       Boolean  @default(true)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  ativo       Boolean    @default(true)
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  exames      tb_exame[]
+}
+
+model tb_exame {
+  id_exame             Int        @id @default(autoincrement())
+  id_usuario           Int
+  idade                Int
+  sexo                 Boolean
+  pulso                Float
+  pressao_sistolica    Float
+  pressao_diastolica   Float
+  glicose              Float
+  ck_mb                Decimal    @db.Decimal(10, 2)
+  troponina            Decimal    @db.Decimal(10, 2)
+  result               Boolean
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+
+  usuario              tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
 }

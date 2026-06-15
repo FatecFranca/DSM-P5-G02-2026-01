@@ -55,24 +55,23 @@ class _LoginPageState extends State<LoginPage>
     setState(() => _isLoading = true);
 
     try {
-      final token = await _apiService.login(
+      await _apiService.login(
         _emailController.text.trim(),
         _senhaController.text,
       );
 
-      // Persista o token conforme necessário, ex: SharedPreferences
-      // await prefs.setString('token', token);
-      debugPrint('Token recebido: $token');
-
       if (mounted) {
         context.go(AppRouter.exames);
       }
-    } on Exception catch (e) {
+    } catch (e) {
       if (mounted) {
-        _showErrorSnackBar(e.toString().replaceFirst('Exception: ', ''));
+        setState(() => _isLoading = false);
+        _showErrorSnackBar(
+          e is Exception
+              ? e.toString().replaceFirst('Exception: ', '')
+              : 'Ocorreu um erro inesperado.',
+        );
       }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -114,7 +113,7 @@ class _LoginPageState extends State<LoginPage>
                     _buildHeader(),
                     const SizedBox(height: 48),
                     _buildForm(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 15),
                     _buildLoginButton(),
                     const SizedBox(height: 20),
                     _buildRegisterLink(),
@@ -131,19 +130,16 @@ class _LoginPageState extends State<LoginPage>
   Widget _buildHeader() {
     return Column(
       children: [
-        Container(
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-            color: AppTheme.accent.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppTheme.accent.withOpacity(0.4), width: 1.5),
-          ),
-          child: const Icon(Icons.lock_rounded, color: AppTheme.accent, size: 36),
+        Image.asset(
+          'lib/public/image.png',
+          height: 200,
+          fit: BoxFit.contain,
+          color: AppTheme.background,
+          colorBlendMode: BlendMode.multiply,
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 4),
         const Text(
-          'Bem-vindo de volta',
+          'Cardio Predict',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 28,
@@ -177,7 +173,7 @@ class _LoginPageState extends State<LoginPage>
             ),
             validator: (value) {
               if (value == null || value.isEmpty) return 'Informe o e-mail';
-              
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value)) return 'E-mail inválido';
               return null;
             },
           ),

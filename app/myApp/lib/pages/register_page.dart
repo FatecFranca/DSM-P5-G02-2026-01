@@ -130,9 +130,9 @@ class _RegisterPageState extends State<RegisterPage>
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: AppTheme.accent.withOpacity(0.15),
+            color: AppTheme.accent.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppTheme.accent.withOpacity(0.4), width: 1.5),
+            border: Border.all(color: AppTheme.accent.withValues(alpha: 0.4), width: 1.5),
           ),
           child: const Icon(Icons.person_add_rounded, color: AppTheme.accent, size: 36),
         ),

@@ -129,10 +129,7 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meu Perfil'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => context.go(AppRouter.sugestoes),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: _isLoadingData
@@ -153,7 +150,7 @@ class _UserPageState extends State<UserPage> {
                 ),
               ),
       ),
-      bottomNavigationBar: _buildBottomNav(context, 3),
+      bottomNavigationBar: _buildBottomNav(context, 2),
     );
   }
 
@@ -216,9 +213,9 @@ class _UserPageState extends State<UserPage> {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: AppTheme.accent.withOpacity(0.15),
+            color: AppTheme.accent.withValues(alpha:0.15),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppTheme.accent.withOpacity(0.4), width: 1.5),
+            border: Border.all(color: AppTheme.accent.withValues(alpha:0.4), width: 1.5),
           ),
           child: const Icon(Icons.person_rounded, color: AppTheme.accent, size: 36),
         ),
@@ -332,35 +329,18 @@ class _UserPageState extends State<UserPage> {
 
   Widget _buildBottomNav(BuildContext context, int currentIndex) {
     return NavigationBar(
-      backgroundColor: AppTheme.secondary,
-      indicatorColor: AppTheme.accent.withOpacity(0.2),
+      backgroundColor: AppTheme.background,
+      indicatorColor: AppTheme.accent.withValues(alpha: 0.2),
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
-        switch (index) {
-          case 0:
-            context.go(AppRouter.sugestoes);
-            break;
-          case 1:
-            context.go(AppRouter.rating);
-            break;
-          case 2:
-            context.go(AppRouter.ratingHistory);
-            break;
-          case 3:
-            context.go(AppRouter.user);
-            break;
-        }
+        if (index == 0) context.go(AppRouter.exames);
+        if (index == 1) context.go(AppRouter.historico);
       },
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.lightbulb_outline),
-          selectedIcon: Icon(Icons.lightbulb_rounded, color: AppTheme.accent),
-          label: 'Sugestões',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.star_outline_rounded),
-          selectedIcon: Icon(Icons.star_rounded, color: AppTheme.accent),
-          label: 'Avaliar',
+          icon: Icon(Icons.monitor_heart_outlined),
+          selectedIcon: Icon(Icons.monitor_heart_rounded, color: AppTheme.accent),
+          label: 'Exame',
         ),
         NavigationDestination(
           icon: Icon(Icons.history_outlined),
