@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const accent = Color(0xFFE94560);
-  static const background = Color(0xFF1A1A2E);
-  static const secondary = Color(0xFF16213E);
-  static const inputFill = Color(0xFF0F3460);
-  static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFF94A3B8);
+  static const accent = Color(0xFF1565C0);
+  static const background = Color(0xFFBBDEFB);
+  static const secondary = Color(0xFFFFFFFF);
+  static const inputFill = Color(0xFFFFFFFF);
+  static const textPrimary = Color(0xFF0D1452);
+  static const textSecondary = Color(0xFF546E8A);
 
-  static final dark = ThemeData(
+  static final light = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
+    brightness: Brightness.light,
     scaffoldBackgroundColor: background,
-    colorScheme: const ColorScheme.dark(
+    colorScheme: const ColorScheme.light(
       primary: accent,
       surface: secondary,
       onSurface: textPrimary,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: secondary,
+      backgroundColor: background,
       foregroundColor: textPrimary,
       elevation: 0,
       centerTitle: true,
     ),
     cardTheme: CardThemeData(
       color: secondary,
-      elevation: 8,
+      elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(

@@ -5,6 +5,7 @@ import { openApiDocument } from "./src/docs/swagger";
 import authRoutes from "./src/routes/auth";
 import usuariosRoutes from "./src/routes/usuarios";
 import diagnosticosRoutes from "./src/routes/diagnosticos";
+import examesRoutes from "./src/routes/exames";
 
 require("dotenv").config();
 
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
 app.use("/diagnosticos", diagnosticosRoutes);
+app.use("/exames", examesRoutes);
 
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
