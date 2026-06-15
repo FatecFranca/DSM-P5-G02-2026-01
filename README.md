@@ -1,4 +1,4 @@
-# HeartX
+# Cardio Predict
 
 Aplicação para avaliação de risco de ataque cardíaco com base em exames clínicos. O usuário informa dados como pulso, pressão arterial, glicose, CK-MB e troponina; o modelo CART classifica o risco e salva o histórico de exames.
 
