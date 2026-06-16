@@ -14,12 +14,12 @@ export function DemoAI() {
 
         <div className="mt-8 prose max-w-none text-slate-700">
           <p>
-            O aplicativo apresenta indicadores claros, recomendações preventivas e recursos educativos para apoiar hábitos saudáveis e
-            a comunicação com profissionais de saúde.
+            O aplicativo analisa dados clínicos e indica de forma clara se o paciente possui ou não risco de ataque cardíaco,
+            apoiando a comunicação com profissionais de saúde.
           </p>
           <ul>
-            <li>Visualização de indicadores principais</li>
-            <li>Conteúdo educativo e recomendações preventivas</li>
+            <li>Visualização dos fatores clínicos analisados</li>
+            <li>Resultado objetivo: sim ou não para risco de ataque cardíaco</li>
             <li>Design focado em usabilidade e privacidade</li>
           </ul>
         </div>

@@ -16,12 +16,12 @@ const steps = [
   {
     icon: FileHeart,
     title: "Resultado da análise",
-    text: "O sistema apresenta uma estimativa visual de risco com barras, score e classificação objetiva.",
+    text: "O sistema indica de forma objetiva se o paciente possui ou não risco de ataque cardíaco.",
   },
   {
     icon: Stethoscope,
-    title: "Recomendações preventivas",
-    text: "Apoio à decisão médica com orientações preventivas e priorização do acompanhamento clínico.",
+    title: "Encaminhamento clínico",
+    text: "O resultado apoia a decisão médica para definir o próximo passo no acompanhamento do paciente.",
   },
 ];
 

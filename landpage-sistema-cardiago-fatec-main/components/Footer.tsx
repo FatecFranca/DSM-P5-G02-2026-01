@@ -4,7 +4,7 @@ const quickLinks = [
   { label: "Plataforma", href: "#plataforma" },
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Indicadores", href: "#indicadores" },
-  { label: "Demonstração", href: "#demo" },
+
 ];
 
 const socialLinks = [
@@ -46,9 +46,9 @@ export function Footer() {
         <div>
           <h4 className="mb-5 font-black">Contato</h4>
           <ul className="space-y-4 text-slate-400">
-            <li className="flex items-center gap-3"><Mail className="h-4 w-4 text-sky-300" /> contato@cardiopredict.ai</li>
-            <li className="flex items-center gap-3"><Phone className="h-4 w-4 text-sky-300" /> +55 (11) 4002-0000</li>
-            <li className="flex items-center gap-3"><MapPin className="h-4 w-4 text-sky-300" /> São Paulo, Brasil</li>
+            <li className="flex items-center gap-3"><Mail className="h-4 w-4 text-sky-300" /> Health@cardiopredict.com.br</li>
+            <li className="flex items-center gap-3"><Phone className="h-4 w-4 text-sky-300" /> +55 (16) 4002-8922</li>
+            <li className="flex items-center gap-3"><MapPin className="h-4 w-4 text-sky-300" /> Franca, Brasil</li>
           </ul>
           <div className="mt-6 flex gap-3">
             {socialLinks.map((social) => (
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10 px-5 py-6 text-center text-sm text-slate-500">
-        © {new Date().getFullYear()} CardioPredict AI. Todos os direitos reservados.
+        © {new Date().getFullYear()} CardioPredict. Todos os direitos reservados.
       </div>
     </footer>
   );

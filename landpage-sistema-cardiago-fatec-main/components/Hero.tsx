@@ -81,21 +81,14 @@ export function Hero() {
                   <p className="font-black">Predição cardiovascular</p>
                   <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-600">Ativo</span>
                 </div>
-                <div className="space-y-4">
-                  {[78, 52, 31].map((value, index) => (
-                    <div key={value}>
-                      <div className="mb-2 flex justify-between text-xs font-bold text-slate-500">
-                        <span>{["Pressão arterial", "Colesterol", "Frequência cardíaca"][index]}</span>
-                        <span>{value}%</span>
-                      </div>
-                      <div className="h-3 overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-400 to-blue-700"
-                          style={{ width: `${value}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center gap-3 py-2">
+                  <p className="text-sm font-semibold text-slate-500">Resultado da análise</p>
+                  <span className="rounded-2xl bg-red-50 px-6 py-3 text-xl font-black text-red-600 ring-1 ring-red-200">
+                    SIM — Alto Risco
+                  </span>
+                  <p className="text-center text-xs leading-5 text-slate-400">
+                    Paciente apresenta risco de ataque cardíaco
+                  </p>
                 </div>
               </div>
             </div>

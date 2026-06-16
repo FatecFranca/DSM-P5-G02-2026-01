@@ -3,12 +3,12 @@ import { MotionDiv } from "./Motion";
 import { SectionHeader } from "./SectionHeader";
 
 const indicators = [
-  { label: "Pressão arterial", value: 86, icon: Activity },
-  { label: "Colesterol", value: 72, icon: Scale },
-  { label: "Frequência cardíaca", value: 64, icon: HeartPulse },
-  { label: "Histórico familiar", value: 58, icon: Dna },
-  { label: "Idade", value: 49, icon: UserRound },
-  { label: "Hábitos de vida", value: 67, icon: Cigarette },
+  { label: "Pressão arterial", icon: Activity },
+  { label: "Colesterol", icon: Scale },
+  { label: "Frequência cardíaca", icon: HeartPulse },
+  { label: "Histórico familiar", icon: Dna },
+  { label: "Idade", icon: UserRound },
+  { label: "Hábitos de vida", icon: Cigarette },
 ];
 
 export function RiskIndicators() {
@@ -35,21 +35,11 @@ export function RiskIndicators() {
                 transition={{ duration: 0.55, delay: index * 0.06 }}
                 className="dark-glass rounded-[2rem] p-6 transition hover:-translate-y-1 hover:bg-white/12"
               >
-                <div className="mb-5 flex items-center justify-between">
+                <div className="mb-5 flex items-center gap-4">
                   <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/10 text-cyan-200 ring-1 ring-white/15">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <span className="text-3xl font-black">{item.value}%</span>
-                </div>
-                <p className="font-bold">{item.label}</p>
-                <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/10">
-                  <MotionDiv
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-sky-500"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${item.value}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.15 + index * 0.06 }}
-                  />
+                  <p className="font-bold">{item.label}</p>
                 </div>
               </MotionDiv>
             );
